@@ -1,0 +1,64 @@
+#!/usr/bin/python3
+
+import sys
+import os
+from subprocess import call
+
+script_dir = os.getcwd()
+
+def init_script(problemid):
+    print ('Initting ' + problemid)
+    problemdir = os.path.join(script_dir, problemid)
+
+    if not os.path.exists(problemdir):
+        os.makedirs(problemdir)
+        print (os.path.join(problemdir, problemid + '.in'));
+        call(['touch', os.path.join(problemdir, problemid + '.in')])
+        call(['touch', os.path.join(problemdir, problemid + '.out')])
+        call(['touch', os.path.join(problemdir, problemid + '.cpp')])
+
+        problemexecpath = os.path.join(problemdir, problemid + '.cpp')
+        templeatepath = os.path.join(script_dir, '.templeate.cpp')
+
+        problemexecfile = open(problemexecpath, 'w')
+        templeatefile = open(templeatepath, 'r')
+
+        templeatecontent = templeatefile.read();
+        problemexecfile.write(templeatecontent.replace('FILENAME', problemid))
+
+        problemexecfile.close()
+        templeatefile.close()
+
+
+    else:
+        print('Directory ' + problemdir + ' exists, nothing changed.')
+
+    print('Init completed.')
+
+def run_script(problemid):
+    problemdir = os.path.join(script_dir, problemid)
+    rundir = os.path.join(problemdir, problemid + '.cpp')
+    execdir = os.path.join(problemdir, '.' + problemid + '.sh')
+    os.system('touch ' + execdir)
+    print ('Running ', execdir)
+    os.system('g++ -std=c++11 ' + rundir + ' -o ' + execdir)
+    os.system('chmod +x ' + execdir)
+    os.chdir(problemdir)
+    os.system(execdir)
+    # g++ -std=c++11 your_file.cpp -o your_program
+
+
+def main():
+    if len(sys.argv) < 3:
+        print ('Not enough parameters')
+    else:
+        if sys.argv[1] == 'init':
+            init_script(sys.argv[2])
+        elif sys.argv[1] == 'run':
+            run_script(sys.argv[2])
+        else:
+            print (sys.argv[1] , ' is not a valid command')
+
+
+if __name__ == '__main__':
+    main()
