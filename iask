@@ -3,8 +3,32 @@
 import sys
 import os
 from subprocess import call
+import requests
+from bs4 import BeautifulSoup
 
 script_dir = os.getcwd()
+
+def problem_exists(problemid):
+    link = 'http://www.infoarena.ro/problema/' + problemid
+    page = requests.get(link)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    if soup.findAll("div", {"id" : "flash"}) == []:
+        print ('problem exists')
+        return 1
+    else:
+        print('problem does not exist')
+        return 0
+
+def fetch_example(problemid):
+    if not problem_exists(problemid):
+        print ('Could not fetch example. Eror: Problem does NOT exist.')
+        return
+    link = 'http://www.infoarena.ro/problema/' + problemid
+    page = requests.get(link)
+    soup = BeautifulSoup(page.content, 'html.parser').find("table", {"class":"example"})
+
+    example = soup.findAll("td")
+    return (example[0].text, example[1].text)
 
 def init_script(problemid):
     print ('Initting ' + problemid)
@@ -18,14 +42,18 @@ def init_script(problemid):
         call(['touch', os.path.join(problemdir, problemid + '.cpp')])
 
         problemexecpath = os.path.join(problemdir, problemid + '.cpp')
+        exinpath = os.path.join(problemdir, problemid + '.in')
         templeatepath = os.path.join(script_dir, '.templeate.cpp')
 
         problemexecfile = open(problemexecpath, 'w')
         templeatefile = open(templeatepath, 'r')
+        exinfile = open(exinpath, 'w')
 
         templeatecontent = templeatefile.read();
         problemexecfile.write(templeatecontent.replace('FILENAME', problemid))
+        exinfile.write(fetch_example(problemid)[0])
 
+        exinfile.close()
         problemexecfile.close()
         templeatefile.close()
 
@@ -45,6 +73,7 @@ def run_script(problemid):
     os.system('chmod +x ' + execdir)
     os.chdir(problemdir)
     os.system(execdir)
+    os.system('rm ' + execdir)
     # g++ -std=c++11 your_file.cpp -o your_program
 
 

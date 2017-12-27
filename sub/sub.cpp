@@ -2,8 +2,8 @@
 
 using namespace std;
 
-ifstream fin ("FILENAME.in");
-ofstream fout("FILENAME.out");
+ifstream fin ("sub.in");
+ofstream fout("sub.out");
 
 int main(){
 
