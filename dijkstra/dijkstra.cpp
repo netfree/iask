@@ -8,57 +8,48 @@ using namespace std;
 ifstream fin ("dijkstra.in");
 ofstream fout("dijkstra.out");
 
-const int inf = 0x3f3f3f3f;
 const int N_MAX = 50000 + 5;
+const int inf = 0x3f3f3f3f;
 
 vector<pii> vec[N_MAX];
-int viz[N_MAX];
 int dist[N_MAX];
+int n, m;
+
 priority_queue<pii, vector<pii>, greater<pii> > q;
 
-int n, m, a, b, c;
-
 void dijkstra(){
-  q.push({0,1});
   for(int i = 2; i<=n; ++i)
     dist[i] = inf;
-
-  while(!q.empty()){
-    int nod = q.top().y;
+  q.push({0, 1});
+  while(q.size()){
     int cost = q.top().x;
-
+    int nod = q.top().y;
     q.pop();
 
-    if(cost != dist[nod])
+    if(dist[nod] != cost)
       continue;
 
-    for(auto v : vec[nod]){
-      int new_nod = v.first;
-      int muchie_cost = v.second;
-      if(dist[new_nod] > dist[nod] + muchie_cost){
-        dist[new_nod] = dist[nod] + muchie_cost;
-        q.push({dist[new_nod], new_nod});
+    for(auto v : vec[nod])
+      if(dist[nod] + v.y < dist[v.x]){
+        dist[v.x] = dist[nod] + v.y;
+        q.push({dist[v.x], v.x});
       }
-    }
   }
-
 }
 
 int main(){
-
   fin >> n >> m;
   while(m--){
+    int a, b, c;
     fin >> a >> b >> c;
     vec[a].push_back({b,c});
   }
-
   dijkstra();
-
   for(int i = 2; i<=n; ++i)
-    if(dist[i] != inf)
-      fout << dist[i] << " ";
-    else fout << "0 ";
-
+    if(dist[i] >= inf)
+      fout << "0 ";
+    else
+      fout << dist[i] << ' ';
 	return 0;
 }
 

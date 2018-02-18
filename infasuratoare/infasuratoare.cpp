@@ -1,8 +1,7 @@
 #define x first
 #define y second
-#define pldld pair<double, double>
 #define ld double
-
+#define pii pair<double, double>
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -12,50 +11,48 @@ ofstream fout("infasuratoare.out");
 
 const int N_MAX = 120000 + 5;
 
-int n, k = 1;
-pldld v[N_MAX], st[N_MAX];
+int n, stsz;
+pii pct[N_MAX];
+pii st[N_MAX];
 
-bool cmp(pldld a, pldld b){
-  return (a < b);
-}
-
-ld deter (pldld a, pldld b, pldld c){
-  return (a.x*b.y + b.x*c.y + a.y*c.x - c.x*b.y - a.x*c.y - b.x*a.y);
+ld deter(pii a, pii b, pii c){
+  return ((a.x - c.x)*(b.y - c.y) + (b.x - c.x)*(c.y - a.y));
 }
 
 int main(){
+
+pii a; a.x = 1; a.y = 1;
+pii b; b.x = 1; b.y = 2;
+pii c; c.x = 0; c.y = 0;
+
+cout << deter(b, a, c);
+
+/*
   fin >> n;
   for(int i = 1; i<=n; ++i)
-    fin >> v[i].x >> v[i].y;
+    fin >> pct[i].x >> pct[i].y;
 
-  sort(v+1,v+n+1,cmp);
+  sort(pct + 1, pct + n + 1);
 
-  st[1].x = v[1].x;
-  st[1].y = v[1].y;
-  k = 1;
-
-  for(int i = 2; i<=n; ++i){
-    while(k > 1 and deter(st[k-1], st[k], v[i]) > 0)
-      k --;
-    k ++;
-    st[k].x = v[i].x;
-    st[k].y = v[i].y;
+  for(int i = 1; i<=n; ++i){
+    while(stsz >= 2 and deter(st[stsz-1], st[stsz], pct[i]) > 0)
+      stsz --;
+    st[++stsz] = pct[i];
   }
 
   for(int i = n-1; i>=1; --i){
-    while(k > 1 and deter(st[k-1], st[k], v[i]) > 0)
-      k --;
-    k ++;
-    st[k].x = v[i].x;
-    st[k].y = v[i].y;
+    while(stsz >= 2 and deter(st[stsz-1], st[stsz], pct[i]) > 0)
+      stsz --;
+    st[++stsz] = pct[i];
   }
-  k--;
-  fout << k << "\n";
-  for(int i = k; i>=1; --i)
-    fout << fixed << setprecision(6) << st[i].x << " " << st[i].y << '\n';
 
+  stsz--;
 
-	return 0;
+  fout << stsz << '\n';
+  for(int i = stsz; i>=1; --i)
+    fout << fixed << setprecision(12) << st[i].x << " " << st[i].y << '\n';
+*/
+  return 0;
 }
 
 //Andrei Muntean, 2018
