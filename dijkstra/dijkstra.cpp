@@ -1,6 +1,3 @@
-#define pii pair<int, int>
-#define x first
-#define y second
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -16,6 +13,8 @@ int dist[N_MAX];
 int n, m;
 
 priority_queue<pii, vector<pii>, greater<pii> > q;
+
+struct eee{};
 
 void dijkstra(){
   for(int i = 2; i<=n; ++i)

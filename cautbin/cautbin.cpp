@@ -7,27 +7,53 @@ ofstream fout("cautbin.out");
 
 const int N_MAX = 100000 + 5;
 
-int type, val, n, a[N_MAX], m;
+int a[N_MAX], n, m;
 
-bool cmp (int a, int b){
-  return (a>b);
+int lower_bound(int x){
+  int lo = 0, hi = n + 1;
+  while(lo < hi){
+    int mid = (lo + hi) / 2;
+    if(x <= a[mid])
+      hi = mid;
+    else
+      lo = mid + 1;
+  }
+  return lo;
+}
+
+int upper_bound(int x){
+  int lo = 0, hi = n + 1;
+  while(lo < hi){
+    int mid = (lo + hi) / 2;
+    if(x < a[mid])
+      hi = mid;
+    else
+      lo = mid + 1;
+  }
+  return lo;
+}
+
+bool binary_search(int x){
+  return (a[lower_bound(x)] == x);
 }
 
 int main(){
   fin >> n;
   for(int i = 1; i<=n; ++i)
-    fin >> a[i];
+      fin >> a[i];
   fin >> m;
   while(m--){
-    fin >> type >> val;
+    int type, x;
+    fin >> type >> x;
     if(type == 0)
-      if(binary_search(a, a+n+1, val,cmp))
-        fout << upper_bound(a+1, a+n+1, val,cmp) - a << "\n";
-      else fout << "-1\n";
-    if(type == 1)
-      fout << upper_bound(a+1, a+n+1, val,cmp) - a << "\n";
-    if(type == 2)
-      fout << lower_bound(a+1, a+n+1, val,cmp) - a << "\n";
+      if(binary_search(x))
+        fout << upper_bound(x) - 1 << "\n";
+      else
+        fout << "-1\n";
+    else if(type == 1)
+      fout << upper_bound(x) - 1 << "\n";
+    else
+      fout << lower_bound(x) << "\n";
   }
 	return 0;
 }
